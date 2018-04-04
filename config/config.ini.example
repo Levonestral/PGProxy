@@ -1,0 +1,87 @@
+# DO NOT USE NOTEPAD TO EDIT CONFIG FILES! USE NOTEPAD++ INSTEAD!
+# Uncomment a line when you want to change its default value (Remove # at the beginning)
+# Please ensure to leave a space after the colon if a value is needed ("example-setting" "example-setting-with: value")
+# When your configuration is done, rename this file by removing the ".example" extension
+
+# NOTE:
+# This configuration is ONLY used by proxy_pool.py. See start.py -h for commands of that tool.
+
+###########################
+# Server
+
+#host:					# Binding IP. Default 127.0.0.1.
+#port:					# Port. Default 4646.
+
+
+###########################
+# Startup
+
+
+# Mutually Exclusive. Will block server startup until completed.
+#initial-validate-working         # Validate ONLY previously working proxies upon server start.
+#initial-validate-all             # Validate ALL proxies upon server start.
+
+# Can run with either of the above. Will block server startup until completed.
+#initial-scrape                   # Scrape and validate new proxies upon server start.
+
+
+###########################
+# Database
+
+#db-name:               # Database name.
+#db-user:               # Database user name.
+#db-pass:               # Database user password.
+#db-host:               # Database host. Default 127.0.0.1.
+#db-port:               # Database port. Default 3306.
+#db-max-connections:    # Database max connections. Default 20.
+
+
+###########################
+# Logging
+
+#log-updates            # Log database updates. Default False.
+#log-proxy-updates      # Log proxy updates. Default False.
+
+
+###########################
+# Proxy Network/Validation
+
+#mode:                  # Specify which proxy mode to use for testing. Default is "socks".
+#retries:               # Number of attempts to check each proxy. Default 5.
+#timeout:               # Connection timeout. Default is 5 seconds.
+
+#proxy-judge:           # URL for AZenv script used to test proxies. Default http://pascal.hoez.free.fr/azenv.php
+
+#no-anonymous           # Disable anonymous proxy test. Default false.
+    
+#extra-request          # Make an extra request to validate PTC. Default false.
+
+#backoff-factor:        # Factor (in seconds) by which the delay until next retry will increase. Default 0.25.
+
+#max-concurrency:       # Maximum concurrent proxy testing requests. Default 100.
+#batch-size:            # Check proxies in batches of limited size. Default 300.
+#limit:                 # Stop tests when we have enough good proxies. Default 100.
+                        # This is the minimum number to maintain. At times you may have more.
+
+
+#geoip_url:             # Some scraping sites do not provide a country.
+                        # So we use a website to lookup the geo location of a given IP.
+                        # Format requires a {} for the IP to be placed.
+                        # Default is http://www.freegeoip.net/json/{0}. 10,000 queries/hr.
+
+#ignore-country: []     # Ignore proxies from countries in this list. Default china.
+
+
+###########################
+# Proxy Auto-Refresh
+
+#auto-refresh                     # Periodically re-validate working, banned or failed proxies and obtain new one's
+                                  # if needed to maintain minimum level. Default false.
+
+#auto-refresh-frequency:          # Frequency, in minutes, of how often to run auto-refresh. Default 60.
+
+#auto-refresh-banned-retries:     # Number of times to retry a banned proxy before giving up entirely. Default 5.
+#auto-refresh-failed-retries:     # Number of times to retry a failed proxy before giving up entirely. Default 5.
+
+#auto-refresh-purge-invalid       # During refresh processing, purge proxies flagged 
+                                  # as invalid due to max retries. Default False.

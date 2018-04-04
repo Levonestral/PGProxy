@@ -1,0 +1,8 @@
+download/
+config/config.ini
+import_proxies.txt
+working_proxies.txt
+*.pyc
+.settings/
+.project
+.pydevproject
