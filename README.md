@@ -33,7 +33,7 @@ If planning on using the server, you will also need to setup a MySQL database.
 Two options are available. 
 
  * **Manual Tool** Allows you to manually scrape and validate proxies from various locations.
- * **ProxyPool** Runs as a server that can be queried to obtain a list of valid proxies. The service runs scrapes and validations automatically as per configuration options.
+ * **PGProxy** Runs as a server that can be queried to obtain a list of valid proxies. The service runs scrapes and validations automatically as per configuration options.
 
 # Manual Tool
 
@@ -166,7 +166,7 @@ Returns the proxies as a list structure:
 Request data is either a single JSON object or a list of JSON objects that contain one or more attributes to set on the proxy. If you send more than one attribute, the proxy will be flagged with each one, so be careful what you send.
 
 Attribute | Required | Description
---------- | -----------
+--------- | ----------- | -----------
 `url` | Yes | The proxy URL to update.
 `working` | No | Update proxy as working.
 `banned`  | No | Update proxy as banned.
