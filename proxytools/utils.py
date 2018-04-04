@@ -15,8 +15,8 @@ def get_args():
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument('-f', '--proxy-file',
                         help='Filename of proxy list to verify.')
-    source.add_argument('-s', '--scrap',
-                        help='Scrap webpages for proxy lists.',
+    source.add_argument('-s', '--scrape',
+                        help='Scrape webpages for proxy lists.',
                         default=False,
                         action='store_true')
     parser.add_argument('-m', '--mode',
@@ -86,8 +86,8 @@ def get_args():
                         action='store_true')
     args = parser.parse_args()
 
-    if not args.proxy_file and not args.scrap:
-        log.error('You must supply a proxylist file or enable scrapping.')
+    if not args.proxy_file and not args.scrape:
+        log.error('You must supply a proxylist file or enable scraping.')
         exit(1)
 
     if not args.proxy_judge:

@@ -5,10 +5,10 @@ import sys
 import logging
 
 from proxytools.proxy_tester import check_proxies, get_local_ip
-from proxytools.proxy_scrapper import (scrap_sockslist_net,
-                                       scrap_vipsocks24_net,
-                                       scrap_proxyserverlist24_top,
-                                       scrap_socksproxylist24_top,
+from proxytools.proxy_scraper import (scrape_sockslist_net,
+                                       scrape_vipsocks24_net,
+                                       scrape_proxyserverlist24_top,
+                                       scrape_socksproxylist24_top,
                                        scrape_premproxy_free)
 from proxytools import utils
 
@@ -33,14 +33,14 @@ def work_cycle(args):
             sys.exit(1)
     else:
         if args.mode == 'http':
-            log.info('Scrapping HTTP proxies...')
-            proxies.update(scrap_proxyserverlist24_top())
+            log.info('Scraping HTTP proxies...')
+            proxies.update(scrape_proxyserverlist24_top())
             proxies.update(scrape_premproxy_free(args.ignore_country))
         else:
-            log.info('Scrapping SOCKS5 proxies...')
-            proxies.update(scrap_sockslist_net(args.ignore_country))
-            proxies.update(scrap_vipsocks24_net())
-            proxies.update(scrap_socksproxylist24_top())
+            log.info('Scraping SOCKS5 proxies...')
+            proxies.update(scrape_sockslist_net(args.ignore_country))
+            proxies.update(scrape_vipsocks24_net())
+            proxies.update(scrape_socksproxylist24_top())
 
     proxies = list(proxies)
 

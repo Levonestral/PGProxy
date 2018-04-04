@@ -20,7 +20,7 @@ from proxytools.pool_models import init_database, db_updater, \
     flaskDb
 from proxytools.proxy_tester import check_proxies, get_local_ip
 
-from proxytools.proxy_scrapper import (scrape_sockslist_net,
+from proxytools.proxy_scraper import (scrape_sockslist_net,
                                        scrape_vipsocks24_net,
                                        scrape_proxyserverlist24_top,
                                        scrape_socksproxylist24_top,
