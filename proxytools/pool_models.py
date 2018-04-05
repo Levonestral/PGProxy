@@ -14,7 +14,7 @@ from playhouse.pool import PooledMySQLDatabase
 from playhouse.shortcuts import RetryOperationalError
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('pogo-proxies')
 
 flaskDb = FlaskDB()
 

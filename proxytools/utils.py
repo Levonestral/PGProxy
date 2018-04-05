@@ -4,7 +4,7 @@
 import argparse
 import logging
 
-log = logging.getLogger('pogo-proxies')
+log = logging.getLogger(__name__)
 
 
 def get_args():

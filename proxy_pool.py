@@ -37,7 +37,7 @@ logging.basicConfig(
 # Silence some loggers
 logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('pogo-proxies')
 
 
 stats_conditions = [
@@ -160,7 +160,7 @@ def get_proxy_batch():
         page += ']'
         return page
     else:
-        return jsonify(proxies=[e.serialize() for e in proxies])
+        return jsonify([e.serialize() for e in proxies])
 
 
 @app.route('/proxy/update', methods=['POST'])
