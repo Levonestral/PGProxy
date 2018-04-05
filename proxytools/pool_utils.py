@@ -37,7 +37,7 @@ def get_args():
                         choices=('all', 'http', 'socks'))
     parser.add_argument('-r', '--retries',
                         help='Number of attempts to check each proxy.',
-                        default=5,
+                        default=0,
                         type=int)
     parser.add_argument('-t', '--timeout',
                         help='Connection timeout. Default is 5 seconds.',
@@ -86,7 +86,7 @@ def get_args():
                         default='127.0.0.1')
     parser.add_argument('--port',
                         help='Port.',
-                        type=int, default=4646)
+                        type=int, default=4244)
     parser.add_argument('--db-name',
                         help='Database name.',
                         default='')

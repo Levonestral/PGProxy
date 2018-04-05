@@ -10,7 +10,7 @@
 # Server
 
 #host:					# Binding IP. Default 127.0.0.1.
-#port:					# Port. Default 4646.
+#port:					# Port. Default 4244.
 
 
 ###########################
@@ -47,8 +47,9 @@
 # Proxy Network/Validation
 
 #mode:                  # Specify which proxy mode to use for testing. Default is "socks".
-#retries:               # Number of attempts to check each proxy. Default 5.
 #timeout:               # Connection timeout. Default is 5 seconds.
+#retries:               # Number of attempts to check each proxy. Default 0.
+                        # If you set this value, it is also recommended to match with RocketMap also.
 
 #proxy-judge:           # URL for AZenv script used to test proxies. Default http://pascal.hoez.free.fr/azenv.php
 
