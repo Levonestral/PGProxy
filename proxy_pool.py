@@ -511,6 +511,9 @@ def validate_all_proxies():
                     log.info(
                         'Too many ban retries. Proxy is invalid: %s',
                         update_proxy['url'])
+                    
+                # Don't continue any further with this proxy.
+                continue
 
         if proxy.failed == 1:
 
@@ -534,13 +537,13 @@ def validate_all_proxies():
                     log.info(
                         'Too many failure retries. Proxy is invalid: %s',
                         update_proxy['url'])
+                    
+                # Don't continue any further with this proxy.
+                continue
 
         # If not invalid, add this proxy to the list for (re)validation.
         if not proxy.invalid:
             urls.append(proxy.url)
-
-        # Cleanup
-        del update_proxy
 
     if len(urls) > 0:
         check_and_import_proxies(urls, True, True, True)
