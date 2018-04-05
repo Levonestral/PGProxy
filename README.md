@@ -20,25 +20,27 @@ Proxy checker that verifies if proxies are able to connect to PokemonGo servers.
  * requests
  * urllib3
  * BeautifulSoup 4
+ * PyMySQL
 
 
 ## Installation
 
 Run the usual `pip install -r requirements.txt`.
 
-If planning on using the server, you will also need to setup a MySQL database. 
+If planning on using **Proxy Pool**, you will also need to setup a MySQL database. 
 
 ## Usage
 
 Two options are available. 
 
- * **Manual Tool** Allows you to manually scrape and validate proxies from various locations.
- * **PGProxy** Runs as a server that can be queried to obtain a list of valid proxies. The service runs scrapes and validations automatically as per configuration options.
+ * `proxy_check.py` Allows you to manually scrape and validate proxies from various locations.
+ * `proxy_pool.py` Runs as a server that can be queried to obtain a list of valid proxies. The service runs scrapes and validations automatically as per configuration options.
 
-# Manual Tool
+# Proxy Check
 
+There is no configuration file for `proxy_check.py`, instead you can use the following:
 ```
-python start.py [-h] [-v] (-f PROXY_FILE | -s) [-m {http,socks}]
+python proxy_check.py [-h] [-v] (-f PROXY_FILE | -s) [-m {http,socks}]
                 [-o OUTPUT_FILE] [-r RETRIES] [-t TIMEOUT] [-pj PROXY_JUDGE]
                 [-na] [-nt | -er] [-bf BACKOFF_FACTOR] [-mc MAX_CONCURRENCY]
                 [-bs BATCH_SIZE] [-l LIMIT] [-ic IGNORE_COUNTRY]
@@ -49,7 +51,7 @@ optional arguments:
   -v, --verbose         Run in the verbose mode.
   -f PROXY_FILE, --proxy-file PROXY_FILE
                         Filename of proxy list to verify.
-  -s, --scrap           Scrap webpages for proxy lists.
+  -s, --scrape          Scrape webpages for proxy lists.
   -m {http,socks}, --mode {http,socks}
                         Specify which proxy mode to use for testing. Default
                         is "socks".
@@ -81,18 +83,22 @@ optional arguments:
 ```
 
 
-# PGProxy:
+# Proxy Pool:
 
-## Setting up PGProxy
+## Setting up Proxy Pool
 
 1. Copy `config/config.ini.sample` to `config/config.ini`.
 2. Adjust settings for listening host:port and your database in `config.ini`.
 3. Adjust any additional settings to meet your requirements in `config.ini`.
-4. Run ProxyPool with `python proxy_pool.py`.
+4. Run Proxy Pool with `python proxy_pool.py`.
 
 You can also provide a custom configuration file using `-cf`:
 
 `python proxy_pool.py -cf config/config.ini`
+
+You can also provide parameters on the command line. Use `-h` for help.
+
+`python proxy_pool.py -h`
 
 ## Importing Existing Proxies
 
