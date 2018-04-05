@@ -21,10 +21,10 @@ from proxytools.pool_models import init_database, db_updater, \
 from proxytools.proxy_tester import check_proxies, get_local_ip
 
 from proxytools.proxy_scraper import (scrape_sockslist_net,
-                                       scrape_vipsocks24_net,
-                                       scrape_proxyserverlist24_top,
-                                       scrape_socksproxylist24_top,
-                                       scrape_premproxy_free)
+                                      scrape_vipsocks24_net,
+                                      scrape_proxyserverlist24_top,
+                                      scrape_socksproxylist24_top,
+                                      scrape_premproxy_free)
 
 
 # Reduce noise from logs
@@ -511,7 +511,7 @@ def validate_all_proxies():
                     log.info(
                         'Too many ban retries. Proxy is invalid: %s',
                         update_proxy['url'])
-                    
+
                 # Don't continue any further with this proxy.
                 continue
 
@@ -537,7 +537,7 @@ def validate_all_proxies():
                     log.info(
                         'Too many failure retries. Proxy is invalid: %s',
                         update_proxy['url'])
-                    
+
                 # Don't continue any further with this proxy.
                 continue
 
