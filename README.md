@@ -38,7 +38,7 @@ Two options are available.
 
 # Proxy Check
 
-There is no configuration file for `proxy_check.py`, instead you can use the following:
+There is no configuration file for `proxy_check.py`, instead, use the command line options:
 ```
 python proxy_check.py [-h] [-v] (-f PROXY_FILE | -s) [-m {http,socks}]
                 [-o OUTPUT_FILE] [-r RETRIES] [-t TIMEOUT] [-pj PROXY_JUDGE]

@@ -49,12 +49,12 @@
 #mode:                  # Specify which proxy mode to use for testing. Default is "socks".
 #timeout:               # Connection timeout. Default is 5 seconds.
 #retries:               # Number of attempts to check each proxy. Default 0.
-                        # If you set this value, it is also recommended to match with RocketMap also.
+                        # If you set this value, it is also recommended to match with services using them.
 
 #proxy-judge:           # URL for AZenv script used to test proxies. Default http://pascal.hoez.free.fr/azenv.php
 
 #no-anonymous           # Disable anonymous proxy test. Default false.
-    
+
 #extra-request          # Make an extra request to validate PTC. Default false.
 
 #backoff-factor:        # Factor (in seconds) by which the delay until next retry will increase. Default 0.25.
@@ -63,7 +63,6 @@
 #batch-size:            # Check proxies in batches of limited size. Default 300.
 #limit:                 # Stop tests when we have enough good proxies. Default 100.
                         # This is the minimum number to maintain. At times you may have more.
-
 
 #geoip_url:             # Some scraping sites do not provide a country.
                         # So we use a website to lookup the geo location of a given IP.
