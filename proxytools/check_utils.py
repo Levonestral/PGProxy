@@ -4,7 +4,7 @@
 import argparse
 import logging
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('pogo-proxies')
 
 
 def get_args():
@@ -71,6 +71,10 @@ def get_args():
     parser.add_argument('-ic', '--ignore-country',
                         help='Ignore proxies from countries in this list.',
                         action='append', default=['china'])
+    parser.add_argument('-gu', '--geoip_url',
+                        help='URL to lookup the geo-location/country of IP.',
+                        action='store_true',
+                        default='http://www.freegeoip.net/json/{0}')
     output = parser.add_mutually_exclusive_group()
     output.add_argument('--proxychains',
                         help='Output in proxychains-ng format.',
@@ -95,79 +99,3 @@ def get_args():
         exit(1)
 
     return args
-
-
-# Load proxies and return a list.
-def load_proxies(filename, mode):
-    proxies = []
-    protocol = ''
-    if mode == 'socks':
-        protocol = 'socks5://'
-    else:
-        protocol = 'http://'
-
-    # Load proxies from the file. Override args.proxy if specified.
-    with open(filename) as f:
-        for line in f:
-            stripped = line.strip()
-
-            # Ignore blank lines and comment lines.
-            if len(stripped) == 0 or line.startswith('#'):
-                continue
-
-            if '://' in stripped:
-                proxies.append(stripped)
-            else:
-                proxies.append(protocol + stripped)
-
-        log.info('Loaded %d proxies.', len(proxies))
-
-    return proxies
-
-
-def export(filename, proxies, clean=False):
-    with open(filename, 'w') as file:
-        file.truncate()
-        for proxy in proxies:
-            if clean:
-                proxy = proxy.split('://', 2)[1]
-
-            file.write(proxy + '\n')
-
-
-def export_proxychains(filename, proxies):
-    with open(filename, 'w') as file:
-        file.truncate()
-        for proxy in proxies:
-            # Split the protocol
-            protocol, address = proxy.split('://', 2)
-            # address = proxy.split('://')[1]
-            # Split the port
-            ip, port = address.split(':', 2)
-            # Write to file
-            file.write(protocol + ' ' + ip + ' ' + port + '\n')
-
-
-def export_kinancity(filename, proxies):
-    with open(filename, 'w') as file:
-        file.truncate()
-        file.write('[')
-        for proxy in proxies:
-            file.write(proxy + ',')
-
-        file.seek(-1, 1)
-        file.write(']\n')
-
-
-def validate_ip(ip):
-    try:
-        parts = ip.split('.')
-        return len(parts) == 4 and all(0 <= int(part) < 256 for part in parts)
-    except ValueError:
-        # one of the 'parts' not convertible to integer.
-        log.warning('Bad IP: %s', ip)
-        return False
-    except (AttributeError, TypeError):
-        # `ip` isn't even a string
-        log.warning('Weird IP: %s', ip)
-        return False

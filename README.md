@@ -119,7 +119,7 @@ This will then validate each proxy provided and import them into the database. T
 
 # API
 
-Let's assume ProxyPool runs at the default URL `http://localhost:4343`. Then the following requests are possible:
+Let's assume PGProxy runs at the default URL `http://localhost:4343`. Then the following requests are possible:
 
 ## Requesting Proxies
 

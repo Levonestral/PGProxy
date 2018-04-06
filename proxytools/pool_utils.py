@@ -16,7 +16,7 @@ def get_args():
     # config files as well as a missing config.ini.
     defaultconfigfiles = []
     if '-cf' not in sys.argv and '--config' not in sys.argv:
-        defaultconfigfiles = [os.getenv('PROXYPOOL_CONFIG', os.path.join(
+        defaultconfigfiles = [os.getenv('PGPROXY_CONFIG', os.path.join(
             os.path.dirname(__file__), '../config/config.ini'))]
     parser = configargparse.ArgParser(default_config_files=defaultconfigfiles)
 
@@ -77,7 +77,7 @@ def get_args():
                         help='Ignore proxies from countries in this list.',
                         action='append', default=['china'])
     parser.add_argument('-gu', '--geoip_url',
-                        help='URL to lookup the geo location of a given IP.',
+                        help='URL to lookup the geo-location/country of IP.',
                         action='store_true',
                         default='http://www.freegeoip.net/json/{0}')
 
@@ -158,11 +158,3 @@ def get_args():
         exit(1)
 
     return args
-
-
-def parse_bool(val):
-    if val is None:
-        return False
-    if val.lower() == 'yes' or val.lower() == 'true':
-        return True
-    return False

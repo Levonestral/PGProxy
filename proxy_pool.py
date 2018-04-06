@@ -5,7 +5,6 @@ import sys
 import json
 import time
 import logging
-import urllib
 from Queue import Queue
 from threading import Thread
 from datetime import datetime
@@ -13,13 +12,19 @@ from datetime import datetime
 from flask import Flask, request, jsonify
 
 from proxytools import pool_utils
-from proxytools.utils import load_proxies
-from proxytools.pool_models import init_database, db_updater, \
-    add_proxy_direct, working_proxy_count, get_all_proxies, \
-    get_working_proxies, get_filtered_proxies, purge_invalid_proxies, \
-    flaskDb
 from proxytools.proxy_tester import check_proxies, get_local_ip
-
+from proxytools.shared_utils import (get_country_from_ip,
+                                     load_proxies,
+                                     parse_bool)
+from proxytools.pool_models import (init_database,
+                                    db_updater,
+                                    add_proxy_direct,
+                                    working_proxy_count,
+                                    get_all_proxies,
+                                    get_working_proxies,
+                                    get_filtered_proxies,
+                                    purge_invalid_proxies,
+                                    flaskDb)
 from proxytools.proxy_scraper import (scrape_sockslist_net,
                                       scrape_vipsocks24_net,
                                       scrape_proxyserverlist24_top,
@@ -58,7 +63,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def index():
-    return "ProxyPool running!"
+    return "PGProxy running!"
 
 
 @app.route('/proxy/status', methods=['GET'])
@@ -92,7 +97,7 @@ def get_status():
     lines += "<tr>"
     for c in stats_conditions:
         cursor = flaskDb.database.execute_sql('''
-            select count(*) from pooledproxy
+            select count(*) from proxypool
             where {}
         '''.format(c[1]))
 
@@ -121,7 +126,7 @@ def get_status_full():
         lines += "<h3>{}</h3>".format(c[0])
 
         cursor = flaskDb.database.execute_sql('''
-            select url from pooledproxy
+            select url from proxypool
             where {}
             order by url desc
         '''.format(c[1]))
@@ -139,10 +144,10 @@ def get_proxy_batch():
 
     format = request.args.get('format')
 
-    working = pool_utils.parse_bool(request.args.get('working'))
-    banned = pool_utils.parse_bool(request.args.get('banned'))
-    failed = pool_utils.parse_bool(request.args.get('failed'))
-    invalid = pool_utils.parse_bool(request.args.get('invalid'))
+    working = parse_bool(request.args.get('working'))
+    banned = parse_bool(request.args.get('banned'))
+    failed = parse_bool(request.args.get('failed'))
+    invalid = parse_bool(request.args.get('invalid'))
 
     if not banned and not failed and not invalid:
         working = True
@@ -262,6 +267,10 @@ def import_proxies():
     log.info('Import completed, exiting.')
 
 
+# ---------------------------------------------------------------------------
+# Proxy Updating Methods
+# ---------------------------------------------------------------------------
+
 def check_and_import_proxies(proxies, import_all_types,
                              capture_failed_anon, ignore_limit):
 
@@ -336,6 +345,15 @@ def check_and_import_proxies(proxies, import_all_types,
             args, proxies, capture_failed_anon)
 
         for proxy in working_proxies:
+
+            # Now that the IP is validated, let's check the country.
+            country = get_country_from_ip(args.geoip_url, proxy)
+            if country in args.ignore_country:
+                log.info('Skipping proxy from country: {} for {}'
+                         .format(proxy, country))
+                continue
+
+            # If still here, add the proxy.
             update_proxy_status(proxy, True, False, False)
 
         if import_all_types:
@@ -358,7 +376,7 @@ def log_proxy_status():
     lines = "Status of {} proxies. "
     for c in stats_conditions:
         cursor = flaskDb.database.execute_sql('''
-            select count(*) from pooledproxy
+            select count(*) from proxypool
             where {}
         '''.format(c[1]))
 
@@ -431,29 +449,8 @@ def clone_proxy(dbproxy):
     return proxy
 
 
-def get_country_from_ip(geoip_url, ip):
-
-    try:
-
-        address = ip.replace("socks5://", "")
-        address = address.replace("http://", "")
-        address = address.replace("https://", "")
-        address = address.split(":")[0]
-
-        url = "http://www.freegeoip.net/json/{0}".format(address)
-        locationInfo = json.loads(urllib.urlopen(url).read())
-        return locationInfo['country_name'].lower()
-        # print 'City: ' + locationInfo['city']
-        # print 'Latitude: ' + str(locationInfo['latitude'])
-        # print 'Longitude: ' + str(locationInfo['longitude'])
-        # print 'IP: ' + str(locationInfo['ip'])
-    except Exception as e:
-        log.exception('Failed do geo locate IP from %s: %s.', url, e)
-        return None
-
-
 # ---------------------------------------------------------------------------
-# Daemon Threads
+# Validation Methods
 # ---------------------------------------------------------------------------
 
 def validate_working_proxies():
@@ -546,6 +543,10 @@ def validate_all_proxies():
         log.info('No proxies available for validation.')
 
 
+# ---------------------------------------------------------------------------
+# Scraping Methods
+# ---------------------------------------------------------------------------
+
 def scrape_http(proxies):
     log.info('Scraping HTTP proxies...')
     proxies.update(scrape_proxyserverlist24_top())
@@ -592,6 +593,10 @@ def scrape_proxies():
     # Validate all the obtained proxies.
     check_and_import_proxies(proxies, False, False, False)
 
+
+# ---------------------------------------------------------------------------
+# Daemon Threads
+# ---------------------------------------------------------------------------
 
 def auto_refresh_daemon():
 
@@ -672,7 +677,7 @@ def initialize():
 # Main
 # ---------------------------------------------------------------------------
 
-log.info("ProxyPool starting up...")
+log.info("PGProxy starting up...")
 
 # Obtain arguments from commandline or configuration file.
 args = pool_utils.get_args()
