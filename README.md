@@ -77,6 +77,7 @@ optional arguments:
                         Stop tests when we have enough good proxies.
   -ic IGNORE_COUNTRY, --ignore-country IGNORE_COUNTRY
                         Ignore proxies from countries in this list.
+  -gu, --geoip_url      URL to lookup the geo-location/country of IP.
   --proxychains         Output in proxychains-ng format.
   --kinancity           Output in Kinan City format.
   --clean               Output proxy list without protocol.
