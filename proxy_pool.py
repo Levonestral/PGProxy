@@ -42,7 +42,7 @@ logging.basicConfig(
 # Silence some loggers
 logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
-log = logging.getLogger('pogo-proxies')
+log = logging.getLogger('pgproxy')
 
 
 stats_conditions = [

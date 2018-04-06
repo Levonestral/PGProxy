@@ -5,7 +5,7 @@ import json
 import logging
 import urllib
 
-log = logging.getLogger('pogo-proxies')
+log = logging.getLogger('pgproxy')
 
 
 def parse_bool(val):

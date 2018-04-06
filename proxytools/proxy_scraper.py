@@ -15,7 +15,7 @@ from zipfile import ZipFile, is_zipfile
 
 from .utils import validate_ip
 
-log = logging.getLogger('pogo-proxies')
+log = logging.getLogger('pgproxy')
 
 
 def download_webpage(target_url, proxy=None, timeout=5):

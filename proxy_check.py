@@ -19,7 +19,7 @@ logging.getLogger("urllib3").setLevel(logging.CRITICAL)
 logging.basicConfig(
     format='%(asctime)s [%(threadName)15.15s][%(levelname)8.8s] %(message)s',
     level=logging.INFO)
-log = logging.getLogger('pogo-proxies')
+log = logging.getLogger('pgproxy')
 
 
 def work_cycle(args):

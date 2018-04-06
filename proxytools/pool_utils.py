@@ -6,7 +6,7 @@ import os
 import configargparse
 import logging
 
-log = logging.getLogger('pogo-proxies')
+log = logging.getLogger('pgproxy')
 
 
 def get_args():
