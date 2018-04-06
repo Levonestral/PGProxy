@@ -42,7 +42,7 @@ class Version(flaskDb.Model):
         primary_key = False
 
 
-class PooledProxy(flaskDb.Model):
+class ProxyPool(flaskDb.Model):
 
     url = Utf8mb4CharField(primary_key=True)
 
@@ -82,7 +82,7 @@ def init_database(args, app):
     flaskDb.init_app(app)
     db.connect()
 
-    if not PooledProxy.table_exists():
+    if not ProxyPool.table_exists():
         create_tables(db)
         InsertQuery(Version, {Version.key: 'schema_version',
                               Version.val: db_schema_version}).execute()
@@ -196,7 +196,7 @@ def db_updater(args, q, db):
 def create_tables(db):
     db.connect()
 
-    tables = [PooledProxy, Version]
+    tables = [ProxyPool, Version]
     for table in tables:
         if not table.table_exists():
             log.info('Creating table: %s', table.__name__)
@@ -209,7 +209,7 @@ def create_tables(db):
 def update_proxy(args, data, db):
     with db.atomic():
         try:
-            proxy, created = PooledProxy.get_or_create(url=data['url'])
+            proxy, created = ProxyPool.get_or_create(url=data['url'])
             metadata = {}
             for key, value in data.items():
                 if not key.startswith('_'):
@@ -237,9 +237,9 @@ def update_proxy(args, data, db):
 
 def working_proxy_count():
 
-    query = (PooledProxy
-             .select(fn.Count(PooledProxy.url+0).alias('count')).dicts()
-             .where(PooledProxy.working == 1))
+    query = (ProxyPool
+             .select(fn.Count(ProxyPool.url+0).alias('count')).dicts()
+             .where(ProxyPool.working == 1))
 
     # We need a total count. Use reduce() instead of sum() for O(n)
     # instead of O(2n) caused by list comprehension.
@@ -252,7 +252,7 @@ def get_all_proxies():
 
     # Return all proxies EXCEPT invalid one's.
     # Invalid may or may not be purged later, regardless, we don't want them.
-    query = (PooledProxy.select().where(PooledProxy.invalid != 1))
+    query = (ProxyPool.select().where(ProxyPool.invalid != 1))
 
     proxies = []
     for p in query:
@@ -263,7 +263,7 @@ def get_all_proxies():
 
 def get_working_proxies():
 
-    query = (PooledProxy.select().where(PooledProxy.working == 1))
+    query = (ProxyPool.select().where(ProxyPool.working == 1))
 
     proxies = []
     for p in query:
@@ -274,37 +274,37 @@ def get_working_proxies():
 
 def get_filtered_proxies(working, banned, failed, invalid):
 
-    expression = (PooledProxy.url != '')
+    expression = (ProxyPool.url != '')
     first = True
 
     if working:
         if first:
-            expression &= (PooledProxy.working == 1)
+            expression &= (ProxyPool.working == 1)
         else:
-            expression |= (PooledProxy.working == 1)
+            expression |= (ProxyPool.working == 1)
         first = False
 
     if banned:
         if first:
-            expression &= (PooledProxy.banned == 1)
+            expression &= (ProxyPool.banned == 1)
         else:
-            expression |= (PooledProxy.banned == 1)
+            expression |= (ProxyPool.banned == 1)
         first = False
 
     if failed:
         if first:
-            expression &= (PooledProxy.failed == 1)
+            expression &= (ProxyPool.failed == 1)
         else:
-            expression |= (PooledProxy.failed == 1)
+            expression |= (ProxyPool.failed == 1)
         first = False
 
     if invalid:
         if first:
-            expression &= (PooledProxy.invalid == 1)
+            expression &= (ProxyPool.invalid == 1)
         else:
-            expression |= (PooledProxy.invalid == 1)
+            expression |= (ProxyPool.invalid == 1)
 
-    query = (PooledProxy.select().where(expression))
+    query = (ProxyPool.select().where(expression))
 
     proxies = []
     for p in query:
@@ -320,16 +320,16 @@ def purge_invalid_proxies():
     urls = []
 
     try:
-        query = (PooledProxy
+        query = (ProxyPool
                  .select()
-                 .where(PooledProxy.invalid == 1)
+                 .where(ProxyPool.invalid == 1)
                  .limit(limit))
         for p in query:
             urls.append(p.url)
         if len(urls) > 0:
             log.info('Retrieved proxies for deletion: {}'.format(urls))
-            result = DeleteQuery(PooledProxy).where(
-                PooledProxy.url << urls).execute()
+            result = DeleteQuery(ProxyPool).where(
+                ProxyPool.url << urls).execute()
             log.info('Deleted {} invalid proxies.'.format(result))
     except OperationalError as e:
         log.error('Failed purge invalid proxies query: {}'.format(e))
@@ -337,7 +337,7 @@ def purge_invalid_proxies():
 
 def add_proxy_direct(url, working, banned, failed):
 
-    proxy, created = PooledProxy.get_or_create(url=url)
+    proxy, created = ProxyPool.get_or_create(url=url)
     proxy.working = working
     proxy.invalid = False
     proxy.banned = banned
