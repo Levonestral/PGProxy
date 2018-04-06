@@ -283,10 +283,6 @@ def check_and_import_proxies(proxies, import_all_types,
         chunks = [proxies[x:x+args.batch_size]
                   for x in xrange(0, len(proxies), args.batch_size)]
 
-        working_proxies = []
-        banned_proxies = []
-        failed_proxies = []
-
         batch_count = 0
         working_count = 0
         num_chunks = len(chunks)
@@ -300,15 +296,13 @@ def check_and_import_proxies(proxies, import_all_types,
             log.info('Starting batch {} of {}. Working: {}'
                      .format(batch_count, num_chunks, working_count))
 
-            working, banned, failed = check_proxies(
+            working_proxies, banned_proxies, failed_proxies = check_proxies(
                 args, chunk, capture_failed_anon)
 
-            working_proxies.extend(working)
             for proxy in working_proxies:
 
                 # Now that the IP is validated, let's check the country.
                 country = get_country_from_ip(args.geoip_url, proxy)
-                # If country is not None and country in ignore_country:
                 if country in args.ignore_country:
                     log.info('Skipping proxy from country: {} for {}'
                              .format(proxy, country))
@@ -324,11 +318,9 @@ def check_and_import_proxies(proxies, import_all_types,
 
             # If requested, import all other result types.
             if import_all_types:
-                banned_proxies.extend(banned)
                 for proxy in banned_proxies:
                     update_proxy_status(proxy, False, True, False)
 
-                failed_proxies.extend(failed)
                 for proxy in failed_proxies:
                     update_proxy_status(proxy, False, False, True)
 
@@ -419,6 +411,9 @@ def wait_db_updates():
             time.sleep(1)
 
         log.info("DB updates completed.")
+
+    # Sleep at least one second regardless, just in case.
+    time.sleep(1)
 
 
 def clone_proxy(dbproxy):
