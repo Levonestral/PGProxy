@@ -131,7 +131,7 @@ If no parameter is provided, only `working` proxies will be returned. You can co
 Parameter | Required | Default | Description
 --------- | -------- | ------- | -----------
 `working` | No  | true | Return proxies that have been determined as working.
-`banned`  | Yes | true | Return proxies that are NPC/Niantic banned.
+`banned`  | Yes | true | Return proxies that are PTC/Niantic banned.
 `failed` | No  | true | Return proxies that recently had network connection issues. (even if temporary)
 `invalid` | No  | true | Return proxies that have been determined invalid due to reaching their "maximum" retry count.
 `format`  | No | json | Value should be: `txt`, `list` or `json`. If not provided, will default to JSON.
